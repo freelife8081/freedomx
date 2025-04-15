@@ -1,109 +1,81 @@
-// dex.js
+const routerAbi = [/* Add Router ABI here */];
+const tokenAbi = [/* Add ERC20 ABI here */];
+const routerAddress = '0xYourRouterAddress'; // Replace with your deployed address
 
-const routerAbi = [/* Add your UniswapV2Router ABI here */];
-const tokenAbi = [/* Standard ERC20 ABI here */];
-const routerAddress = '0xYourRouterAddress'; // Replace with your deployed router address
 const coreNetwork = {
-  chainId: '0x45C', // 1116 in hex
+  chainId: '0x45C',
   chainName: 'CoreDAO',
   nativeCurrency: {
     name: 'CORE',
     symbol: 'CORE',
-    decimals: 18,
+    decimals: 18
   },
   rpcUrls: ['https://rpc.coredao.org'],
-  blockExplorerUrls: ['https://scan.coredao.org'],
+  blockExplorerUrls: ['https://scan.coredao.org']
 };
 
-let web3;
-let userAccount;
+let web3, user;
 
 async function connectWallet() {
-  if (typeof window.ethereum === 'undefined') {
-    alert('Please install MetaMask!');
-    return;
-  }
-
-  await window.ethereum.request({ method: 'eth_requestAccounts' });
+  if (!window.ethereum) return alert('Install MetaMask!');
   web3 = new Web3(window.ethereum);
+  await ethereum.request({ method: 'eth_requestAccounts' });
   const accounts = await web3.eth.getAccounts();
-  userAccount = accounts[0];
-  document.getElementById('walletStatus').textContent = 'Wallet Connected: ' + userAccount;
+  user = accounts[0];
+  document.getElementById('walletStatus').textContent = `Wallet Connected: ${user}`;
 }
 
 async function switchToCoreDAO() {
   try {
-    await window.ethereum.request({
+    await ethereum.request({
       method: 'wallet_addEthereumChain',
       params: [coreNetwork],
     });
-  } catch (error) {
-    console.error('Failed to switch network', error);
+  } catch (e) {
+    alert('Network switch failed.');
   }
 }
 
 async function swapTokens() {
-  const fromToken = document.getElementById('fromToken').value;
-  const toToken = document.getElementById('toToken').value;
+  const from = document.getElementById('fromToken').value;
+  const to = document.getElementById('toToken').value;
   const amount = document.getElementById('amount').value;
-  const slippage = parseFloat(document.getElementById('slippage').value || 0.5);
+  const slippage = parseFloat(document.getElementById('slippage').value || '0.5');
 
-  if (!web3) return alert('Connect wallet first!');
   const router = new web3.eth.Contract(routerAbi, routerAddress);
-  const token = new web3.eth.Contract(tokenAbi, fromToken);
-  const amountInWei = web3.utils.toWei(amount, 'ether');
+  const token = new web3.eth.Contract(tokenAbi, from);
+  const weiAmount = web3.utils.toWei(amount, 'ether');
+  await token.methods.approve(routerAddress, weiAmount).send({ from: user });
 
-  await token.methods.approve(routerAddress, amountInWei).send({ from: userAccount });
-
-  const path = [fromToken, toToken];
+  const path = [from, to];
+  const amounts = await router.methods.getAmountsOut(weiAmount, path).call();
+  const minOut = (amounts[1] * (100 - slippage)) / 100;
   const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
 
-  // Estimate output
-  const amountsOut = await router.methods.getAmountsOut(amountInWei, path).call();
-  const minOut = web3.utils.toBN(amountsOut[1])
-    .mul(web3.utils.toBN(1000 - Math.floor(slippage * 10)))
-    .div(web3.utils.toBN(1000));
-
   await router.methods.swapExactTokensForTokens(
-    amountInWei,
-    minOut.toString(),
-    path,
-    userAccount,
-    deadline
-  ).send({ from: userAccount });
+    weiAmount, Math.floor(minOut), path, user, deadline
+  ).send({ from: user });
 
-  alert('Swap executed!');
+  alert('Swap successful!');
 }
 
 async function addLiquidity() {
   const tokenA = document.getElementById('liqTokenA').value;
   const tokenB = document.getElementById('liqTokenB').value;
-  const amountA = document.getElementById('liqAmountA').value;
-  const amountB = document.getElementById('liqAmountB').value;
+  const amountA = web3.utils.toWei(document.getElementById('liqAmountA').value, 'ether');
+  const amountB = web3.utils.toWei(document.getElementById('liqAmountB').value, 'ether');
 
-  if (!web3) return alert('Connect wallet first!');
   const router = new web3.eth.Contract(routerAbi, routerAddress);
-  const tokenAContract = new web3.eth.Contract(tokenAbi, tokenA);
-  const tokenBContract = new web3.eth.Contract(tokenAbi, tokenB);
+  const a = new web3.eth.Contract(tokenAbi, tokenA);
+  const b = new web3.eth.Contract(tokenAbi, tokenB);
 
-  const amountAWei = web3.utils.toWei(amountA, 'ether');
-  const amountBWei = web3.utils.toWei(amountB, 'ether');
-
-  await tokenAContract.methods.approve(routerAddress, amountAWei).send({ from: userAccount });
-  await tokenBContract.methods.approve(routerAddress, amountBWei).send({ from: userAccount });
+  await a.methods.approve(routerAddress, amountA).send({ from: user });
+  await b.methods.approve(routerAddress, amountB).send({ from: user });
 
   const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
-
   await router.methods.addLiquidity(
-    tokenA,
-    tokenB,
-    amountAWei,
-    amountBWei,
-    0,
-    0,
-    userAccount,
-    deadline
-  ).send({ from: userAccount });
+    tokenA, tokenB, amountA, amountB, 0, 0, user, deadline
+  ).send({ from: user });
 
   alert('Liquidity added!');
 }
