@@ -29,7 +29,7 @@ const tokenAbi = [
     "type":"function"
   }
 ];
-const routerAddress = '0xYourRouterAddress'; // Replace with deployed router
+const routerAddress = '0xBb5e1777A331ED93E07cF043363e48d320eb96c4'; // Replace with deployed router
 
 const coreNetwork = {
   chainId: '0x45C',
@@ -125,4 +125,12 @@ async function addLiquidity() {
   ).send({ from: user });
 
   alert('Liquidity added!');
+}
+function selectToken(inputId, value) {
+  if (value === "core") {
+    document.getElementById(inputId).value = "";
+    document.getElementById(inputId + 'Info').textContent = 'CORE is the native token';
+  } else {
+    document.getElementById(inputId).value = value;
+  }
 }
