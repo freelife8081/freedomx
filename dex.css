@@ -55,3 +55,10 @@ button:hover {
   font-weight: bold;
   color: #fff;
 }
+
+.token-info {
+  font-size: 0.9em;
+  color: #ccc;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
