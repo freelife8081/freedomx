@@ -15,8 +15,12 @@
 
     <div class="swap-section">
       <h2>Token Swap</h2>
-      <input type="text" id="fromToken" placeholder="From Token Address" />
-      <input type="text" id="toToken" placeholder="To Token Address" />
+      <input type="text" id="fromToken" placeholder="From Token Address" onblur="showTokenInfo('fromToken', 'fromTokenInfo')" />
+      <div id="fromTokenInfo" class="token-info"></div>
+
+      <input type="text" id="toToken" placeholder="To Token Address" onblur="showTokenInfo('toToken', 'toTokenInfo')" />
+      <div id="toTokenInfo" class="token-info"></div>
+
       <input type="number" id="amount" placeholder="Amount" />
       <input type="number" id="slippage" placeholder="Slippage %" />
       <button onclick="swapTokens()">Swap</button>
@@ -24,8 +28,12 @@
 
     <div class="liquidity-section">
       <h2>Add Liquidity</h2>
-      <input type="text" id="liqTokenA" placeholder="Token A Address" />
-      <input type="text" id="liqTokenB" placeholder="Token B Address" />
+      <input type="text" id="liqTokenA" placeholder="Token A Address" onblur="showTokenInfo('liqTokenA', 'liqTokenAInfo')" />
+      <div id="liqTokenAInfo" class="token-info"></div>
+
+      <input type="text" id="liqTokenB" placeholder="Token B Address" onblur="showTokenInfo('liqTokenB', 'liqTokenBInfo')" />
+      <div id="liqTokenBInfo" class="token-info"></div>
+
       <input type="number" id="liqAmountA" placeholder="Amount A" />
       <input type="number" id="liqAmountB" placeholder="Amount B" />
       <button onclick="addLiquidity()">Add Liquidity</button>
