@@ -1,6 +1,35 @@
-const routerAbi = [/* Add Router ABI here */];
-const tokenAbi = [/* Add ERC20 ABI here */];
-const routerAddress = '0xYourRouterAddress'; // Replace with your deployed address
+const routerAbi = [/* Your Router ABI goes here */];
+const tokenAbi = [
+  {
+    "constant":true,
+    "inputs":[],
+    "name":"name",
+    "outputs":[{"name":"","type":"string"}],
+    "type":"function"
+  },
+  {
+    "constant":true,
+    "inputs":[],
+    "name":"symbol",
+    "outputs":[{"name":"","type":"string"}],
+    "type":"function"
+  },
+  {
+    "constant":true,
+    "inputs":[],
+    "name":"decimals",
+    "outputs":[{"name":"","type":"uint8"}],
+    "type":"function"
+  },
+  {
+    "constant":false,
+    "inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],
+    "name":"approve",
+    "outputs":[{"name":"","type":"bool"}],
+    "type":"function"
+  }
+];
+const routerAddress = '0xYourRouterAddress'; // Replace with deployed router
 
 const coreNetwork = {
   chainId: '0x45C',
@@ -33,6 +62,24 @@ async function switchToCoreDAO() {
     });
   } catch (e) {
     alert('Network switch failed.');
+  }
+}
+
+async function showTokenInfo(inputId, infoId) {
+  const address = document.getElementById(inputId).value.trim();
+  if (!web3 || !web3.utils.isAddress(address)) {
+    document.getElementById(infoId).textContent = 'Invalid address';
+    return;
+  }
+
+  try {
+    const token = new web3.eth.Contract(tokenAbi, address);
+    const name = await token.methods.name().call();
+    const symbol = await token.methods.symbol().call();
+    const decimals = await token.methods.decimals().call();
+    document.getElementById(infoId).textContent = `Name: ${name} | Symbol: ${symbol} | Decimals: ${decimals}`;
+  } catch {
+    document.getElementById(infoId).textContent = 'Token info not found';
   }
 }
 
