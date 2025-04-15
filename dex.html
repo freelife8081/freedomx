@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FreedomX DEX</title>
   <link rel="stylesheet" href="dex.css" />
+  <style>
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .tabs button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      background-color: #444;
+      color: #ffd700;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background-color: #ffd700;
+      color: #000;
+    }
+
+    .tab-content {
+      display: none;
+      margin-top: 30px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -13,7 +45,12 @@
     <button onclick="connectWallet()">Connect Wallet</button>
     <button onclick="switchToCoreDAO()">Switch to CoreDAO</button>
 
-    <div class="swap-section">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('swap')">Swap</button>
+      <button class="tab-btn" onclick="switchTab('liquidity')">Liquidity</button>
+    </div>
+
+    <div id="swap" class="tab-content active">
       <h2>Token Swap</h2>
       <input type="text" id="fromToken" placeholder="From Token Address" onblur="showTokenInfo('fromToken', 'fromTokenInfo')" />
       <div id="fromTokenInfo" class="token-info"></div>
@@ -26,7 +63,7 @@
       <button onclick="swapTokens()">Swap</button>
     </div>
 
-    <div class="liquidity-section">
+    <div id="liquidity" class="tab-content">
       <h2>Add Liquidity</h2>
       <input type="text" id="liqTokenA" placeholder="Token A Address" onblur="showTokenInfo('liqTokenA', 'liqTokenAInfo')" />
       <div id="liqTokenAInfo" class="token-info"></div>
@@ -42,5 +79,17 @@
 
   <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
   <script src="dex.js"></script>
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(div => {
+        div.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
 </body>
 </html>
