@@ -1,0 +1,37 @@
+{
+  "name": "FreedomX Default List",
+  "logoURI": "https://yourdomain.com/logo.png",
+  "keywords": ["freedomx", "dex", "coredao", "tokenlist"],
+  "timestamp": "2025-04-14T00:00:00+00:00",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "tokens": [
+    {
+      "chainId": 1116,
+      "address": "0xWCOREPLACEHOLDER",
+      "name": "Wrapped CORE",
+      "symbol": "WCORE",
+      "decimals": 18,
+      "logoURI": "https://yourdomain.com/icons/wcore.png"
+    },
+    {
+      "chainId": 1116,
+      "address": "0xUSDTPLACEHOLDER",
+      "name": "Tether USD",
+      "symbol": "USDT",
+      "decimals": 6,
+      "logoURI": "https://yourdomain.com/icons/usdt.png"
+    },
+    {
+      "chainId": 1116,
+      "address": "0xFXTPLACEHOLDER",
+      "name": "FreedomX Token",
+      "symbol": "FXT",
+      "decimals": 18,
+      "logoURI": "https://yourdomain.com/icons/fxt.png"
+    }
+  ]
+}
