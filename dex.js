@@ -1,35 +1,84 @@
-const routerAbi = [/* Your Router ABI goes here */];
-const tokenAbi = [
+const routerAbi = [
   {
-    "constant":true,
-    "inputs":[],
-    "name":"name",
-    "outputs":[{"name":"","type":"string"}],
-    "type":"function"
+    "inputs": [
+      { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountOutMin", "type": "uint256" },
+      { "internalType": "address[]", "name": "path", "type": "address[]" },
+      { "internalType": "address", "name": "to", "type": "address" },
+      { "internalType": "uint256", "name": "deadline", "type": "uint256" }
+    ],
+    "name": "swapExactTokensForTokens",
+    "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    "constant":true,
-    "inputs":[],
-    "name":"symbol",
-    "outputs":[{"name":"","type":"string"}],
-    "type":"function"
+    "inputs": [
+      { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "internalType": "address[]", "name": "path", "type": "address[]" }
+    ],
+    "name": "getAmountsOut",
+    "outputs": [{ "internalType": "uint256[]", "name": "amounts", "type": "uint256[]" }],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    "constant":true,
-    "inputs":[],
-    "name":"decimals",
-    "outputs":[{"name":"","type":"uint8"}],
-    "type":"function"
-  },
-  {
-    "constant":false,
-    "inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],
-    "name":"approve",
-    "outputs":[{"name":"","type":"bool"}],
-    "type":"function"
+    "inputs": [
+      { "internalType": "address", "name": "tokenA", "type": "address" },
+      { "internalType": "address", "name": "tokenB", "type": "address" },
+      { "internalType": "uint256", "name": "amountADesired", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountBDesired", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountAMin", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountBMin", "type": "uint256" },
+      { "internalType": "address", "name": "to", "type": "address" },
+      { "internalType": "uint256", "name": "deadline", "type": "uint256" }
+    ],
+    "name": "addLiquidity",
+    "outputs": [
+      { "internalType": "uint256", "name": "amountA", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountB", "type": "uint256" },
+      { "internalType": "uint256", "name": "liquidity", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ];
-const routerAddress = '0xBb5e1777A331ED93E07cF043363e48d320eb96c4'; // Replace with deployed router
+
+const tokenAbi = [
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "name",
+    "outputs": [{ "name": "", "type": "string" }],
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [{ "name": "", "type": "string" }],
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [{ "name": "", "type": "uint8" }],
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "name": "_spender", "type": "address" },
+      { "name": "_value", "type": "uint256" }
+    ],
+    "name": "approve",
+    "outputs": [{ "name": "", "type": "bool" }],
+    "type": "function"
+  }
+];
+
+const routerAddress = '0xBb5e1777A331ED93E07cF043363e48d320eb96c4';
 
 const coreNetwork = {
   chainId: '0x45C',
@@ -126,6 +175,7 @@ async function addLiquidity() {
 
   alert('Liquidity added!');
 }
+
 function selectToken(inputId, value) {
   if (value === "core") {
     document.getElementById(inputId).value = "";
